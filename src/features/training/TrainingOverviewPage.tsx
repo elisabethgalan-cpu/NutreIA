@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { demoMachines } from '@/lib/mockData';
 import { calculateLoadProgression } from '@/lib/validation/rules';
+import { recordExercisePerformance } from '@/lib/supabase/service';
 import {
   Dumbbell,
   Play,
@@ -16,11 +17,12 @@ import {
 import { ExercisePerformance, TechniqueStatus } from '@/types/database';
 
 export const TrainingOverviewPage: React.FC = () => {
-  const { currentMember } = useAuth();
+  const { currentMember, dbStatus } = useAuth();
   const [activeTab, setActiveTab] = useState<'routine' | 'active_session' | 'machines'>('routine');
 
   // Estado de la sesión activa
   const [sessionCompleted, setSessionCompleted] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string>('');
   const [actualLoad, setActualLoad] = useState<number>(45);
   const [completedSets, setCompletedSets] = useState<number>(3);
   const [rpe, setRpe] = useState<number>(7);
@@ -29,9 +31,9 @@ export const TrainingOverviewPage: React.FC = () => {
   const [painNotes, setPainNotes] = useState<string>('');
 
   const currentPerformance: ExercisePerformance = {
-    id: 'perf-live',
+    id: `perf-${Date.now()}`,
     workout_session_id: 'sess-live',
-    exercise_id: 'ex-001',
+    exercise_id: '30000000-0000-0000-0000-000000000001',
     actual_load: actualLoad,
     load_unit: 'kg',
     target_sets: 3,
@@ -45,6 +47,17 @@ export const TrainingOverviewPage: React.FC = () => {
   };
 
   const progressionResult = calculateLoadProgression(currentPerformance, demoMachines[0]);
+
+  const handleSavePerformance = async () => {
+    const savedInDb = await recordExercisePerformance(currentMember.id, currentPerformance);
+    setSaveMessage(
+      savedInDb
+        ? '✓ Registro y series guardados con éxito en la base de datos Supabase.'
+        : '✓ Registro guardado en la memoria local.'
+    );
+    setSessionCompleted(true);
+    setTimeout(() => setSessionCompleted(false), 4000);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -297,10 +310,7 @@ export const TrainingOverviewPage: React.FC = () => {
             </div>
 
             <button
-              onClick={() => {
-                setSessionCompleted(true);
-                setTimeout(() => setSessionCompleted(false), 3000);
-              }}
+              onClick={handleSavePerformance}
               className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-3 rounded-xl transition-colors shadow-sm"
             >
               Guardar Serie y Registrar Ejercicio
@@ -308,7 +318,7 @@ export const TrainingOverviewPage: React.FC = () => {
 
             {sessionCompleted && (
               <div className="p-3 bg-emerald-100 text-emerald-900 text-xs font-semibold rounded-xl text-center">
-                ✓ Registro guardado correctamente en la persistencia local.
+                {saveMessage}
               </div>
             )}
           </div>

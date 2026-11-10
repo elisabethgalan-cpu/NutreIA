@@ -15,9 +15,10 @@ import {
   Check,
 } from 'lucide-react';
 import { MealType } from '@/types/database';
+import { saveMealRating } from '@/lib/supabase/service';
 
 export const NutritionOverviewPage: React.FC = () => {
-  const { currentMember, members } = useAuth();
+  const { currentMember, members, dbStatus } = useAuth();
   const [activeTab, setActiveTab] = useState<'menu' | 'recipes' | 'shopping' | 'ranking'>('menu');
   const [selectedDay, setSelectedDay] = useState('Lunes');
   const [ratingSuccess, setRatingSuccess] = useState<string | null>(null);
@@ -35,10 +36,12 @@ export const NutritionOverviewPage: React.FC = () => {
     { type: 'dinner', title: 'Cena', recipeIndex: 0, time: '21:00' },
   ];
 
-  const handleRate = (recipeId: string, stars: number) => {
+  const handleRate = async (recipeId: string, stars: number) => {
     setRatings((prev) => ({ ...prev, [recipeId]: stars }));
-    setRatingSuccess(`¡Valoración de ${stars} estrellas registrada para ${currentMember.display_name}!`);
-    setTimeout(() => setRatingSuccess(null), 3000);
+    const savedInDb = await saveMealRating(recipeId, currentMember.id, stars);
+    const destination = savedInDb ? 'guardada en Supabase' : 'guardada localmente';
+    setRatingSuccess(`¡Valoración de ${stars} estrellas ${destination} para ${currentMember.display_name}!`);
+    setTimeout(() => setRatingSuccess(null), 3500);
   };
 
   return (
