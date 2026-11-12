@@ -5,6 +5,16 @@ export type MealType = 'breakfast' | 'lunch' | 'dinner';
 export type TrainingLevel = 'beginner' | 'intermediate' | 'advanced';
 export type TechniqueStatus = 'correct' | 'needs_review' | 'incomplete';
 
+export interface AppUser {
+  id: string;
+  email: string;
+  name: string;
+  role: Role;
+  password?: string;
+  linkedMemberId?: string;
+  createdAt: string;
+}
+
 export interface Family {
   id: string;
   name: string;

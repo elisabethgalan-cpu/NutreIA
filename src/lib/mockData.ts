@@ -1,4 +1,25 @@
-import { Family, FamilyMember, GymMachine, Recipe } from '@/types/database';
+import { AppUser, Family, FamilyMember, GymMachine, Recipe } from '@/types/database';
+
+export const initialUsers: AppUser[] = [
+  {
+    id: 'usr-admin-01',
+    email: 'admin@nutreia.com',
+    name: 'Elisabeth (Admin)',
+    role: 'admin',
+    password: 'admin',
+    linkedMemberId: 'mem-001',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'usr-member-02',
+    email: 'carlos@nutreia.com',
+    name: 'Carlos',
+    role: 'member',
+    password: '123',
+    linkedMemberId: 'mem-002',
+    createdAt: new Date().toISOString(),
+  },
+];
 
 export const initialFamily: Family = {
   id: 'fam-demo-001',
