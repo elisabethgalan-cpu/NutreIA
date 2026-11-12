@@ -42,12 +42,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // 1. Usuarios con contraseña
   const [users, setUsers] = useState<AppUser[]>(() => {
     const saved = localStorage.getItem('nutreia_app_users');
-    return saved ? JSON.parse(saved) : initialUsers;
+    if (saved) {
+      try {
+        const parsed: AppUser[] = JSON.parse(saved);
+        // Asegurar que el usuario admin tiene la contraseña actualizada
+        return parsed.map((u) => (u.role === 'admin' ? { ...u, password: '123456' } : u));
+      } catch {
+        return initialUsers;
+      }
+    }
+    return initialUsers;
   });
 
   const [currentUser, setCurrentUser] = useState<AppUser | null>(() => {
     const saved = localStorage.getItem('nutreia_current_user');
-    return saved ? JSON.parse(saved) : null;
+    if (saved) {
+      try {
+        const parsed: AppUser = JSON.parse(saved);
+        if (parsed.role === 'admin') {
+          return { ...parsed, password: '123456' };
+        }
+        return parsed;
+      } catch {
+        return null;
+      }
+    }
+    return null;
   });
 
   // 2. Familia y Miembros

@@ -6,7 +6,7 @@ export const initialUsers: AppUser[] = [
     email: 'admin@nutreia.com',
     name: 'Elisabeth (Admin)',
     role: 'admin',
-    password: 'admin',
+    password: '123456',
     linkedMemberId: 'mem-001',
     createdAt: new Date().toISOString(),
   },
