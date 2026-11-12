@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
-import { Shield, Lock, Mail, User, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Lock, Mail, User, ArrowRight, AlertCircle } from 'lucide-react';
 
 export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSuccess }) => {
   const { login, register } = useAuth();
@@ -8,8 +8,8 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
 
   // Form State
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('admin@nutreia.com');
-  const [password, setPassword] = useState('admin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -48,12 +48,6 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickLogin = (quickEmail: string, quickPass: string) => {
-    setEmail(quickEmail);
-    setPassword(quickPass);
-    setError(null);
   };
 
   return (
@@ -166,42 +160,6 @@ export const LoginPage: React.FC<{ onLoginSuccess?: () => void }> = ({ onLoginSu
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
-
-        {/* Accesos rápidos de demostración */}
-        {!isRegisterMode && (
-          <div className="pt-4 border-t border-slate-100 space-y-2.5">
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block text-center">
-              Cuentas de Acceso Rápido
-            </span>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('admin@nutreia.com', 'admin')}
-                className="p-2.5 bg-amber-50 hover:bg-amber-100/80 border border-amber-200 rounded-xl text-left transition-colors"
-              >
-                <div className="font-bold text-amber-900 flex items-center gap-1">
-                  <Shield className="w-3.5 h-3.5 text-amber-700" />
-                  <span>Admin</span>
-                </div>
-                <div className="text-[10px] text-amber-700 font-mono mt-0.5">admin@nutreia.com</div>
-                <div className="text-[10px] text-amber-600">clave: admin</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('carlos@nutreia.com', '123')}
-                className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition-colors"
-              >
-                <div className="font-bold text-slate-800 flex items-center gap-1">
-                  <User className="w-3.5 h-3.5 text-slate-600" />
-                  <span>Miembro</span>
-                </div>
-                <div className="text-[10px] text-slate-600 font-mono mt-0.5">carlos@nutreia.com</div>
-                <div className="text-[10px] text-slate-500">clave: 123</div>
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

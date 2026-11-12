@@ -47,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [currentUser, setCurrentUser] = useState<AppUser | null>(() => {
     const saved = localStorage.getItem('nutreia_current_user');
-    return saved ? JSON.parse(saved) : initialUsers[0]; // Usuario admin por defecto
+    return saved ? JSON.parse(saved) : null;
   });
 
   // 2. Familia y Miembros
